@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login e Cadastro - TUDO 10</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
+</head>
+<body>
+  <header id="topo"></header>
+  <nav class="sub-nav" id="menu"></nav>
+  <main class="main-container">
+    <div class="form-box">
+      <div class="chips" style="justify-content: center;">
+        <button class="chip on" data-tab="formLogin">Entrar</button>
+        <button class="chip" data-tab="formCadastro">Criar conta</button>
+      </div>
+      <form id="formLogin">
+        <div class="form-group"><label>E-mail</label><input name="email" type="email" required maxlength="60" placeholder="seu@email.com"></div>
+        <div class="form-group"><label>Senha</label><input name="senha" type="password" required minlength="6" maxlength="20"></div>
+        <button class="btn-primary" style="width: 100%;">Entrar</button>
+      </form>
+      <form id="formCadastro" hidden>
+        <div class="form-group"><label>Nome completo</label><input name="nome" required maxlength="50" placeholder="Seu nome"></div>
+        <div class="form-group"><label>E-mail</label><input name="email" type="email" required maxlength="60" placeholder="seu@email.com"></div>
+        <div class="form-group"><label>CPF (máscara automática)</label><input name="cpf" data-mask="cpf" maxlength="14" inputmode="numeric" required placeholder="000.000.000-00"></div>
+        <div class="form-group"><label>Telefone (máscara automática)</label><input name="telefone" data-mask="telefone" maxlength="15" inputmode="numeric" required placeholder="(00) 00000-0000"></div>
+        <div class="form-group"><label>CEP (máscara automática)</label><input name="cep" data-mask="cep" maxlength="9" inputmode="numeric" required placeholder="00000-000"></div>
+        <div class="form-group"><label>Endereço de entrega</label><input name="endereco" maxlength="80" required placeholder="Rua, número, bairro"></div>
+        <div class="form-group"><label>Senha (6 a 20 caracteres)</label><input name="senha" type="password" required minlength="6" maxlength="20"></div>
+        <button class="btn-primary" style="width: 100%;">Cadastrar</button>
+      </form>
+    </div>
+  </main>
+  <footer id="rodape"></footer>
+</body>
+</html>
