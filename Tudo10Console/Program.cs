@@ -7,9 +7,6 @@ using System.Text.Json;
 
 namespace Tudo10Crud
 {
-    // =====================================================================
-    // MODELO: um pedido do delivery TUDO 10 (tudo custa R$ 10,00)
-    // =====================================================================
     class Pedido
     {
         public const decimal PrecoUnitario = 10m;
@@ -26,40 +23,32 @@ namespace Tudo10Crud
         public decimal Total => Quantidade * PrecoUnitario;
     }
 
-    // =====================================================================
-    // CRUD: guarda os pedidos em um VETOR (array) e salva em pedidos.json.
-    // Quando for ligar o MySQL, é AQUI que você troca o vetor por comandos SQL
-    // (INSERT, SELECT, UPDATE, DELETE). O resto do programa não muda.
-    // =====================================================================
     class PedidoCrud
     {
         const int Capacidade = 100;
         const string ArquivoJson = "pedidos.json";
 
         Pedido[] pedidos = new Pedido[Capacidade];
-        int quantidade = 0;      // quantos pedidos existem no vetor
-        int proximoNumero = 1;   // "auto incremento" (no MySQL será AUTO_INCREMENT)
+        int quantidade = 0;
+        int proximoNumero = 1;
 
-        // ---------- CREATE ----------
         public bool Criar(Pedido p)
         {
-            if (quantidade >= Capacidade) return false;   // vetor cheio
+            if (quantidade >= Capacidade) return false;
             p.Numero = proximoNumero++;
             pedidos[quantidade++] = p;
             SalvarJson();
             return true;
         }
 
-        // ---------- READ ----------
         public Pedido[] Listar() => pedidos.Take(quantidade).ToArray();
 
         public Pedido? Buscar(int numero)
         {
             int i = IndiceDe(numero);
-            return i >= 0 ? pedidos[i] : null;            // operador ternário
+            return i >= 0 ? pedidos[i] : null;
         }
 
-        // ---------- UPDATE ----------
         public bool Atualizar(Pedido p)
         {
             int i = IndiceDe(p.Numero);
@@ -69,13 +58,11 @@ namespace Tudo10Crud
             return true;
         }
 
-        // ---------- DELETE ----------
         public bool Excluir(int numero)
         {
             int i = IndiceDe(numero);
             if (i < 0) return false;
 
-            // "puxa" os elementos seguintes uma posição para a esquerda
             for (int j = i; j < quantidade - 1; j++)
                 pedidos[j] = pedidos[j + 1];
 
@@ -84,7 +71,6 @@ namespace Tudo10Crud
             return true;
         }
 
-        // ---------- Busca sequencial no vetor ----------
         int IndiceDe(int numero)
         {
             for (int i = 0; i < quantidade; i++)
@@ -92,14 +78,13 @@ namespace Tudo10Crud
             return -1;
         }
 
-        // ---------- Arquivo JSON (entregável da 2ª entrega) ----------
         public void SalvarJson()
         {
             var opcoes = new JsonSerializerOptions
             {
                 WriteIndented = true,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping   // mantém acentos
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
             File.WriteAllText(ArquivoJson, JsonSerializer.Serialize(Listar(), opcoes), Encoding.UTF8);
         }
@@ -124,12 +109,8 @@ namespace Tudo10Crud
         }
     }
 
-    // =====================================================================
-    // PROGRAMA: menu no console
-    // =====================================================================
     class Program
     {
-        // Vetores com as opções (iguais às do site)
         static readonly string[] Cardapio =
         {
             "X-Tudo Especial", "Hot Dog Completo", "X-Frango com Catupiry",
@@ -171,7 +152,6 @@ namespace Tudo10Crud
             Console.WriteLine("Até logo!");
         }
 
-        // ---------- Telas do CRUD ----------
         static void Cadastrar(PedidoCrud crud)
         {
             Console.WriteLine("\n--- NOVO PEDIDO ---");
@@ -258,9 +238,6 @@ namespace Tudo10Crud
             Console.WriteLine($"  Total:     R$ {p.Total:F2}");
             Console.WriteLine($"  Status:    {(p.Entregue ? "Entregue" : "Em andamento")}");
         }
-
-        // ---------- Funções de leitura com validação ----------
-        // Se "atual" for informado, apertar Enter mantém o valor atual (usado no Atualizar).
 
         static string LerTexto(string rotulo, int max, string? atual = null)
         {

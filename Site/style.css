@@ -126,7 +126,6 @@ header {
   cursor: pointer;
 }
 
-/* Navigation Menu */
 .sub-nav {
   display: flex;
   justify-content: center;
@@ -147,7 +146,6 @@ header {
   color: var(--primary);
 }
 
-/* Container & Cards */
 .main-container {
   max-width: 1200px;
   margin: 30px auto;
@@ -198,7 +196,6 @@ header {
   margin: 10px 0;
 }
 
-/* Forms (Login/Cadastro/Perfil) */
 .form-box {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
@@ -230,7 +227,6 @@ header {
   outline: none;
 }
 
-/* Footer */
 footer {
   text-align: center;
   padding: 20px;
@@ -250,7 +246,6 @@ footer {
     max-width: 100%;
   }
 }
-/* ===== Adicionados na reformulação ===== */
 body, header, .sub-nav, footer, .card-produto, .form-box { transition: background .3s, color .3s; }
 .sub-nav { flex-wrap: wrap; }
 .hero { background: linear-gradient(135deg, #ff0055, #f59e0b); color: #fff; border-radius: 16px; padding: 28px 32px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }

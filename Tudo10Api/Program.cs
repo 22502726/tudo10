@@ -3,7 +3,6 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using MySqlConnector;
 
-// >>> TROQUE SUA_SENHA pela senha do seu MySQL (a mesma do Workbench) <<<
 const string ConnStr = "Server=localhost;Port=3306;Database=tudo10;User ID=root;Password=SUA_SENHA;";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +12,6 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
 var app = builder.Build();
 app.UseCors();
 
-// ---------- Funções auxiliares ----------
 async Task<MySqlConnection> Abrir() { var c = new MySqlConnection(ConnStr); await c.OpenAsync(); return c; }
 
 string Hash(string senha)
@@ -38,7 +36,6 @@ string? Validar(Usuario u, bool comSenha) =>
     string.IsNullOrWhiteSpace(u.Endereco) || u.Endereco.Length > 80 ? "Endereço inválido." :
     comSenha && (u.Senha.Length < 6 || u.Senha.Length > 20) ? "A senha deve ter de 6 a 20 caracteres." : null;
 
-// Lista pedidos (com cliente e itens) no formato que o site espera
 async Task<List<Dictionary<string, object?>>> ListarPedidos(int? usuarioId, int? numero = null)
 {
     await using var c = await Abrir();
@@ -74,7 +71,6 @@ async Task<List<Dictionary<string, object?>>> ListarPedidos(int? usuarioId, int?
     return lista;
 }
 
-// Grava todos os pedidos em pedidos.json (entregável da 2ª entrega)
 async Task ExportarJson()
 {
     var op = new JsonSerializerOptions { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -82,7 +78,6 @@ async Task ExportarJson()
     await File.WriteAllTextAsync("pedidos.json", JsonSerializer.Serialize(await ListarPedidos(null), op));
 }
 
-// ---------- PRODUTOS ----------
 app.MapGet("/api/produtos", async () =>
 {
     await using var c = await Abrir();
@@ -93,7 +88,6 @@ app.MapGet("/api/produtos", async () =>
     return l;
 });
 
-// ---------- USUÁRIOS (cadastro, login, atualizar, excluir) ----------
 app.MapPost("/api/usuarios", async (Usuario u) =>
 {
     var erro = Validar(u, true);
@@ -155,7 +149,6 @@ app.MapDelete("/api/usuarios/{id:int}", async (int id) =>
     return apagou ? Results.NoContent() : Results.NotFound();
 });
 
-// ---------- PEDIDOS (CRUD) ----------
 app.MapGet("/api/pedidos", async (int? usuarioId) => await ListarPedidos(usuarioId));
 
 app.MapGet("/api/pedidos/{n:int}", async (int n) =>

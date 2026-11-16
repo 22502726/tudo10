@@ -1,5 +1,3 @@
-/* ===== TUDO 10 - script.js ===== */
-// Armazenamento local (simula o banco enquanto o back-end C# não está ligado)
 const ls = {
   get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
   set(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
@@ -10,7 +8,6 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 const dados = f => Object.fromEntries(new FormData(f));
 
-// ----- Tema claro/escuro (aplicado já no <head> para não "piscar") -----
 document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
 function toggleTheme() {
   const novo = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
@@ -18,7 +15,6 @@ function toggleTheme() {
   localStorage.setItem('theme', novo);
 }
 
-// ----- Produtos (se a foto falhar, aparece o emoji do produto) -----
 const PRECO = 10, MAX_QTD = 20;
 const U = 'https://images.unsplash.com/photo-';
 const PRODUTOS = [
@@ -46,7 +42,6 @@ function toast(msg, erro) {
   setTimeout(() => t.remove(), 2500);
 }
 
-// ----- Máscaras (só aceitam números) e validação de CPF -----
 const MASCARAS = {
   cpf: v => v.replace(/\D/g, '').slice(0, 11).replace(/(\d{3})(\d{1,3})?(\d{1,3})?(\d{1,2})?/,
     (m, a, b, c, d) => a + (b ? '.' + b : '') + (c ? '.' + c : '') + (d ? '-' + d : '')),
@@ -70,9 +65,7 @@ function cpfValido(c) {
   return true;
 }
 
-// ----- Sessão e usuários -----
 const API = 'http://localhost:5000/api';
-// Chamada à API: devolve { ok, dados }
 async function api(rota, metodo = 'GET', corpo) {
   try {
     const r = await fetch(API + rota, { method: metodo, headers: { 'Content-Type': 'application/json' }, body: corpo ? JSON.stringify(corpo) : undefined });
@@ -83,7 +76,6 @@ async function api(rota, metodo = 'GET', corpo) {
 }
 const msgErro = (r, padrao) => typeof r.dados === 'string' && r.dados ? r.dados : padrao;
 
-// Usuário logado (guardado no navegador após o login na API)
 const usuario = () => ls.get('t10_user', null);
 function exigirLogin() {
   if (usuario()) return true;
@@ -96,7 +88,6 @@ function entrar(user) {
   location.href = /^[a-z]+\.html$/.test(n) ? n : 'index.html';
 }
 
-// ----- Carrinho -----
 const carrinho = () => ls.get('t10_carrinho', {});
 const qtdTotal = () => Object.values(carrinho()).reduce((s, q) => s + q, 0);
 const itensCarrinho = () => Object.entries(carrinho()).map(([id, q]) => ({ p: PRODUTOS.find(x => x.id == id), q })).filter(i => i.p);
@@ -118,7 +109,6 @@ function adicionarCarrinho(id) {
   toast(`"${PRODUTOS.find(p => p.id === id).nome}" adicionado ao carrinho!`);
 }
 
-// ----- Layout comum (cabeçalho, menu e rodapé) -----
 function montarLayout() {
   const pag = location.pathname.split('/').pop() || 'index.html', u = usuario();
   $('topo').innerHTML = `
@@ -136,7 +126,6 @@ function montarLayout() {
   };
 }
 
-// ----- Página inicial: filtro por categoria + busca em tempo real -----
 let catAtual = 'Todos';
 const card = p => `<div class="card-produto"><div class="thumb"><span>${p.emoji}</span>${p.foto ? `<img src="${p.foto}" alt="${esc(p.nome)}" loading="lazy" onerror="this.remove()">` : ''}</div>
   <span class="cat">${esc(p.cat)}</span><h3>${esc(p.nome)}</h3><p class="preco">${brl(PRECO)}</p>
@@ -154,7 +143,6 @@ function initIndex() {
   filtrar();
 }
 
-// ----- Carrinho / finalizar pedido -----
 function renderLista() {
   const itens = itensCarrinho(), total = itens.reduce((s, i) => s + i.q * PRECO, 0);
   $('checkout').hidden = !itens.length;
@@ -190,7 +178,6 @@ async function finalizarPedido(e) {
   setTimeout(() => location.href = 'pedidos.html', 1200);
 }
 
-// ----- Pedidos (histórico, exportar JSON, excluir) -----
 const statusPedido = p => { const m = (Date.now() - new Date(p.criadoEm)) / 60000; return m < 1 ? 'Recebido' : m < 3 ? 'Em preparo' : m < 6 ? 'Saiu para entrega' : 'Entregue'; };
 function baixarJSON(nome, obj) {
   const a = document.createElement('a');
@@ -226,7 +213,6 @@ function initPedidos() {
   setInterval(render, 30000);
 }
 
-// ----- Login / cadastro -----
 function initLogin() {
   if (usuario()) { location.href = 'perfil.html'; return; }
   document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => {
@@ -252,7 +238,6 @@ function initLogin() {
   };
 }
 
-// ----- Perfil (ler, atualizar, sair, excluir conta) -----
 function initPerfil() {
   if (!exigirLogin()) return;
   const u = usuario(), f = $('formPerfil');
@@ -275,7 +260,6 @@ function initPerfil() {
   };
 }
 
-// ----- Inicialização -----
 window.addEventListener('DOMContentLoaded', () => {
   montarLayout();
   document.querySelectorAll('[data-mask]').forEach(inp => inp.addEventListener('input', () => inp.value = MASCARAS[inp.dataset.mask](inp.value)));
